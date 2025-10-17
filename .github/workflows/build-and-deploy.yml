@@ -30,16 +30,23 @@ jobs:
           ls -la | sed -n '1,200p'
           echo "----"
 
-      - name: Find Java source files (handles spaces) and list them
-        run: |
+            - name: Find Java source files (handles spaces) and list them
+    run: |
+          # produce NUL-delimited list of .java files
           find . -name "*.java" -print0 > /tmp/sources0.txt
           if [ ! -s /tmp/sources0.txt ]; then
             echo "No .java files found. Exiting with error."
             exit 1
           fi
-          echo "Java sources found:"
+          echo "Java sources found (raw list):"
           tr '\0' '\n' < /tmp/sources0.txt | sed -n '1,200p'
-          tr '\0' '\n' < /tmp/sources0.txt > sources.txt
+
+          # Create sources.txt with each filename quoted so javac sees the whole name (handles spaces)
+          # Example output line: "./Todo List App/src/TodoListApplication.java"
+          tr '\0' '\n' < /tmp/sources0.txt | sed -e 's/"/\\"/g' -e 's/.*/"&"/' > sources.txt
+
+          echo "sources.txt (first 200 lines):"
+          sed -n '1,200p' sources.txt
 
       - name: Auto-detect Main class (package + class that contains main)
         id: detect-main
