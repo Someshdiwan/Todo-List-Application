@@ -136,8 +136,6 @@ This project was created for hands-on exploration of:
 
 🐳 **Docker Image:** [someshdiwan/todo-list-app](https://hub.docker.com/r/someshdiwan/todo-list-app)  
 
-🌐 **Live Demo:** [todo-list-app-49q5.onrender.com](https://todo-list-app-49q5.onrender.com/)
-
 ---
 
 ```
