@@ -89,9 +89,9 @@ Visit 👉 http://localhost:8080 to interact with the terminal-style UI.
 🧭 System Design
 
 Includes both Low-Level Design (LLD) and High-Level Design (HLD) documentation:
-	•	LLD: Internal class structure (TodoController, TodoService, DTOs, model)
-	•	HLD: System architecture showing backend, frontend, and Docker runtime layers
-	•	Visualized using Eraser.io Flowchart Generator for clear architecture mapping.
+•	LLD: Internal class structure (TodoController, TodoService, DTOs, model)
+•	HLD: System architecture showing backend, frontend, and Docker runtime layers
+•	Visualized using Eraser.io Flowchart Generator for clear architecture mapping.
 
 ⸻
 
@@ -116,4 +116,5 @@ GitHub: Someshdiwan
 
 This project is released under the MIT License.
 
+```
 ---
