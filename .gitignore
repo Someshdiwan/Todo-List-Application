@@ -1,7 +1,67 @@
-.idea/
-*.iml
+# ===========================
+# Java / Maven build files
+# ===========================
+target/
 out/
-build/
 *.class
 *.jar
+*.war
+*.ear
+
+# ===========================
+# IntelliJ IDEA
+# ===========================
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# ===========================
+# macOS system files
+# ===========================
 .DS_Store
+
+# ===========================
+# Logs and temporary files
+# ===========================
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# ===========================
+# Environment & secrets
+# ===========================
+.env
+secrets/
+*.key
+*.pem
+
+# ===========================
+# Docker
+# ===========================
+*.pid
+docker-compose.override.yml
+docker-compose.local.yml
+
+# ===========================
+# Design / generated previews
+# ===========================
+System Design/*.iml
+System Design/*.idea/
+System Design/out/
+
+# ===========================
+# Node / Frontend (if added later)
+# ===========================
+node_modules/
+dist/
+build/
+
+# ===========================
+# OS trash
+# ===========================
+Thumbs.db
+ehthumbs.db
+$RECYCLE.BIN/
