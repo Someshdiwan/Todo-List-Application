@@ -1,0 +1,115 @@
+name: Build Java (auto-detect main) and Deploy to gh-pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Find Java source files (handles spaces) and list them
+        run: |
+          # produce NUL-delimited list of .java files
+          find . -name "*.java" -print0 > /tmp/sources0.txt
+          if [ ! -s /tmp/sources0.txt ]; then
+            echo "No .java files found. Exiting with error."
+            exit 1
+          fi
+          echo "Java sources found (raw list):"
+          tr '\0' '\n' < /tmp/sources0.txt | sed -n '1,200p'
+          # Quote each path so javac @file handles spaces
+          tr '\0' '\n' < /tmp/sources0.txt | sed -e 's/"/\\"/g' -e 's/.*/"&"/' > sources.txt
+          echo "sources.txt (first 200 lines):"
+          sed -n '1,200p' sources.txt
+
+      - name: Auto-detect Main class (package + class that contains main)
+        id: detect-main
+        run: |
+          main_file=""
+          while IFS= read -r -d '' file; do
+            if grep -qE 'public[[:space:]]+static[[:space:]]+void[[:space:]]+main[[:space:]]*\(' "$file"; then
+              main_file="$file"
+              break
+            fi
+          done < /tmp/sources0.txt
+
+          if [ -z "$main_file" ]; then
+            echo "::error::No Java file with a public static void main(...) found."
+            exit 1
+          fi
+
+          echo "Main file detected: $main_file"
+          pkg=$(sed -n '1,80p' "$main_file" | awk '/^\s*package/ {gsub(/;$/,"",$2); print $2; exit}')
+          classname=$(basename "$main_file" .java)
+
+          if [ -n "$pkg" ]; then
+            fq="${pkg}.${classname}"
+          else
+            fq="${classname}"
+          fi
+
+          echo "fq=$fq" >> "$GITHUB_OUTPUT"
+          echo "mainfile=$main_file" >> "$GITHUB_OUTPUT"
+
+      - name: Compile Java sources
+        run: |
+          mkdir -p out
+          # javac accepts quoted filenames in sources.txt
+          javac -d out @sources.txt
+          echo "Compilation done. Showing out/ listing (first 200 files):"
+          find out -maxdepth 5 -type f | sed -n '1,200p'
+
+      - name: Create runnable JAR using detected Main-Class
+        run: |
+          mkdir -p build
+          fq="${{ steps.detect-main.outputs.fq }}"
+          echo "Main-Class: $fq" > manifest.txt
+          jar cfm build/app.jar manifest.txt -C out .
+          ls -l build/app.jar
+
+      - name: Prepare pages content (index + app.jar)
+        run: |
+          rm -rf pages
+          mkdir -p pages
+          cp build/app.jar pages/app.jar
+          if [ -f "Frontend/index.html" ]; then
+            cp "Frontend/index.html" pages/index.html
+          elif [ -f "index.html" ]; then
+            cp index.html pages/index.html
+          else
+            cat > pages/index.html <<'HTML'
+          <!doctype html>
+          <html>
+          <head><meta charset="utf-8"><title>Todo App - Download</title></head>
+          <body>
+          <h1>Todo List App</h1>
+          <p><a href="app.jar" download>Download runnable JAR</a></p>
+          <pre>java -jar app.jar</pre>
+          </body>
+          </html>
+          HTML
+          fi
+          echo "Pages directory contents:"
+          ls -la pages
+
+      - name: Deploy to GitHub Pages (gh-pages)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./pages
