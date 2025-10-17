@@ -1,0 +1,57 @@
+Here’s how SOLID, DRY, KISS, and other architectural ideas are embodied in the project:
+
+1. SOLID Principles
+
+S — Single Responsibility Principle (SRP)
+	•	Each class has one focused job:
+	•	TodoController → Handles HTTP routes and user interactions.
+	•	TodoService → Business logic (add, edit, delete, sort, etc.).
+	•	TodoItem → Data model representing one task.
+	•	UpdateTodoRequest → Validates request input (name/deadline).
+	•	This separation makes the code cleaner, testable, and reusable.
+
+O — Open/Closed Principle (OCP)
+	•	The TodoService can be extended to persist data to a database (e.g., MongoDB or JPA) without modifying existing logic.
+	•	The command structure in the frontend (add|edit|toggle) can also be extended with new commands safely.
+
+L — Liskov Substitution Principle (LSP)
+	•	Not heavily used here, but your architecture supports it — for instance, we could substitute
+	InMemoryTodoService with a DatabaseTodoService seamlessly if they share the same interface.
+
+I — Interface Segregation Principle (ISP)
+	•	Implicitly followed: REST API endpoints are logically separated by behavior (add, edit, toggle),
+	rather than one monolithic handler.
+
+D — Dependency Inversion Principle (DIP)
+	•	Spring Boot handles this beautifully.
+	•	The controller depends on the TodoService abstraction (via @Autowired), not on any concrete implementation.
+	•	This means we can swap service logic without changing controller code.
+
+
+2. DRY (Don’t Repeat Yourself)
+	•	Common date validation logic is encapsulated in a single isValidDate() method.
+	•	All task list manipulations (add, edit, delete) reuse shared helper functions like reorderByIndices().
+	•	Shared formatting and printing patterns ensure consistency across all commands.
+
+⸻
+
+3. KISS (Keep It Simple, Stupid)
+	•	The project avoids unnecessary complexity — no databases, no ORM, no overengineering.
+	•	You rely on simple ArrayList structures and straightforward loops.
+	•	The command-based web UI uses basic, intuitive syntax (like a console app).
+
+This “KISS-first” architecture makes it perfect for learning and demonstration — we can add complexity later without
+rewriting core logic.
+
+
++----------------------+-------------------------------------------------------------+
+| Principle            | How It’s Applied                                            |
++----------------------+-------------------------------------------------------------+
+| SOLID                | Clean separation of controller, service, model, validation  |
+| DRY                  | Centralized logic, reusable functions                       |
+| KISS                 | Simple, console-like web UI with minimal complexity         |
+| MVC Pattern          | Clear architectural layering                                |
+| Command Pattern      | Frontend request parsing                                    |
+| Dependency Injection | Spring-managed beans for loose coupling                     |
+| Containerization     | Multi-stage Docker build for portability                    |
++----------------------+-------------------------------------------------------------+

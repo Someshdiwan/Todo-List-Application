@@ -1,0 +1,82 @@
+✅ MVC (Model-View-Controller)
+	•	Model: TodoItem
+	•	Controller: TodoController
+	•	View: HTML + JS terminal-style frontend
+	•	Service Layer: Acts as business logic separating concerns cleanly.
+
+✅ Singleton (Spring Context)
+	•	TodoService acts effectively as a singleton managed by Spring’s container — one instance handles all requests.
+
+✅ Factory & Builder Principles (Spring Boot)
+	•	The application context acts like a factory, instantiating components (@Service, @Controller) via dependency injection.
+
+✅ Command Pattern (Frontend)
+	•	The JavaScript command processor interprets user input strings like add|name=...|deadline=... into actionable backend API calls.
+
+Additional Engineering Practices
+	•	Validation: Done via annotations (@Pattern) and logic (isValidDate) to ensure data consistency.
+	•	Encapsulation: All data operations hidden behind TodoService.
+	•	Immutability Intent: Each TodoItem instance represents a snapshot of a task’s state.
+	•	Layered Architecture: Presentation → API → Service → Data flow is cleanly divided.
+	•	Containerization: Docker ensures reproducibility, isolated runtime, and portability.
+
+
++----------------------------------------------------------------------------------------------+ |
+|                                🧩 DESIGN PRINCIPLES & PATTERNS — SUMMARY                       |
++----------------------+------------------------------+----------------------------------------+ |
+| Category             | Principle / Pattern           | Used in Project / Description           |
++----------------------+------------------------------+----------------------------------------+ |
+| Core Principles      | SOLID                         | ✅ Partially — Controller, Service, and |
+|                      |                               | Model layers follow SRP and DIP via     |
+|                      |                               | Spring Boot DI.                         |
+|                      | SRP (Single Responsibility)   | ✅ Each class (Controller, Service,     |
+|                      |                               | Model) has one clear purpose.           |
+|                      | OCP (Open/Closed)             | ✅ Business logic can be extended       |
+|                      |                               | (e.g., database, UI) without modifying  |
+|                      |                               | core code.                              |
+|                      | LSP (Liskov Substitution)     | ⚙️ Potential — Could be applied if      |
+|                      |                               | service interfaces are introduced.      |
+|                      | ISP (Interface Segregation)   | ⚙️ Potential — REST endpoints are       |
+|                      |                               | logically separated, but explicit       |
+|                      |                               | interfaces not yet defined.             |
+|                      | DIP (Dependency Inversion)    | ✅ Spring Boot handles dependency       |
+|                      |                               | injection between controller and        |
+|                      |                               | service.                                |
++----------------------+------------------------------+----------------------------------------+ |
+| Code Quality         | DRY (Don’t Repeat Yourself)   | ✅ Common logic (e.g., date validation, |
+|                      |                               | sorting) centralized in helper methods. |
+|                      | KISS (Keep It Simple, Stupid) | ✅ Straightforward architecture — no    |
+|                      |                               | databases, no overengineering.          |
+|                      | YAGNI (You Aren’t Gonna       | ✅ Minimal viable feature set, avoids   |
+|                      | Need It)                      | unused abstractions.                    |
++----------------------+------------------------------+----------------------------------------+ |
+| Design Patterns      | MVC (Model-View-Controller)   | ✅ Controller → Service → Model         |
+|                      |                               | separation; HTML/JS UI as view layer.   |
+|                      | Singleton (via Spring Context)| ✅ Service managed as singleton by      |
+|                      |                               | Spring container.                       |
+|                      | Command Pattern (Frontend)    | ✅ JS command parser interprets inputs  |
+|                      |                               | like `add`.                             |
+|                      | Factory Pattern               | ⚙️ Implicit — Spring’s bean factory     |
+|                      |                               | instantiates and wires dependencies.    |
+|                      | Builder / Fluent API          | ❌ Not used yet — could be added for    |
+|                      |                               | creating Todo objects cleanly.          |
++----------------------+------------------------------+----------------------------------------+ |
+| Architecture         | Layered Architecture          | ✅ Controller → Service → Data structure|
+|                      |                               | flow is clear.                          |
+|                      | Microservice-ready (Docker)   | ✅ Multi-stage Docker build makes it    |
+|                      |                               | portable and deployable anywhere.       |
+|                      | Persistence Layer             | ❌ Currently uses in-memory storage —   |
+|                      |                               | no database or repository pattern.      |
++----------------------+------------------------------+----------------------------------------+ |
+| System Design        | LLD + HLD Focus               | ✅ Demonstrates low-level logic design  |
+|                      |                               | and high-level container architecture.  |
++----------------------+------------------------------+----------------------------------------+ |
+| Testing / CI         | Automated Tests               | ❌ Manual validation only; could        |
+|                      |                               | integrate JUnit + CI later.             |
++----------------------+------------------------------+----------------------------------------+ |
+
+🧠 IN SHORT
+
+✅ Used: SRP, OCP, DIP, DRY, KISS, MVC, Command Pattern, Docker, Layered Design.
+⚙️ Partially Used / Possible Enhancements: LSP, ISP, Factory abstractions.
+❌ Not Yet Used: Builder Pattern, Persistent Database Layer, Automated Testing.
