@@ -128,8 +128,6 @@ This project was created for hands-on exploration of:
 
 ---
 
----
-
 ## 🧠 Author & Project Links
 
 👤 **Somesh Diwan**  
