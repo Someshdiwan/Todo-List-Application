@@ -7,6 +7,32 @@ Built with **Java 17**, **Maven**, and **Docker**, it provides a command-based w
 
 ---
 
+```
+### 🌐 Live Demo
+
+```bash
+🚀 Access the live app here (Render Free Tier):
+https://todo-list-app-49q5.onrender.com/
+
+🧩 About Deployment
+• The application runs inside a Docker container hosted on Render Cloud.
+• Render automatically pulls the latest image from the GitHub repository and builds it using a multi-stage Dockerfile (Maven build → JDK runtime).
+• The backend is a Spring Boot service serving both the REST API and the interactive web terminal UI built with HTML + JavaScript.
+• This deployment demonstrates a production-like environment on Render’s free tier (no manual server setup).
+
+💻 Runtime Details
+• Container base: eclipse-temurin:17-jdk-jammy
+• Port exposed: 8080
+• Auto-deployed from: Render
+• Hosted endpoint: https://todo-list-app-49q5.onrender.com/
+
+🧠 Key Features Live
+• Interactive command-line style UI in browser
+• Persistent REST endpoints for add, edit, delete, sort tasks
+• Deployed using Spring Boot + Docker + Render CI workflow
+```
+
+---
 ## 🚀 Tech Stack
 
 - **Java 17** — Core application logic
@@ -115,6 +141,6 @@ GitHub: Someshdiwan
 🏁 License
 
 This project is released under the MIT License.
-
 ```
+
 ---
