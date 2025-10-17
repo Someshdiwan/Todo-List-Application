@@ -110,37 +110,39 @@ docker run -p 8080:8080 todo-list-app:latest
 
 Visit 👉 http://localhost:8080 to interact with the terminal-style UI.
 
-⸻
-
 🧭 System Design
 
 Includes both Low-Level Design (LLD) and High-Level Design (HLD) documentation:
-•	LLD: Internal class structure (TodoController, TodoService, DTOs, model)
-•	HLD: System architecture showing backend, frontend, and Docker runtime layers
-•	Visualized using Eraser.io Flowchart Generator for clear architecture mapping.
-
-⸻
+• LLD: Internal class structure (TodoController, TodoService, DTOs, model)
+• HLD: System architecture showing backend, frontend, and Docker runtime layers
+• Visualized using Eraser.io Flowchart Generator for clear architecture mapping.
 
 🎯 Learning Objectives
 
 This project was created for hands-on exploration of:
-•	Spring Boot REST API development
-•	Dockerized builds and deployment pipelines
-•	Applying LLD & HLD principles to real projects	
-•	Clean code structure and modular design
-
-⸻
-
-🧠 Author
-
-Somesh Diwan
-GitHub: Someshdiwan
-
-⸻
-
-🏁 License
-
-This project is released under the MIT License.
+• Spring Boot REST API development
+• Dockerized builds and deployment pipelines
+• Applying LLD & HLD principles to real projects	
+• Clean code structure and modular design
 ```
 
 ---
+
+---
+
+## 🧠 Author & Project Links
+
+👤 **Somesh Diwan**  
+
+💻 **GitHub Repo:** [SomeshDiwan/Todo-List-Application](https://github.com/Someshdiwan/Todo-List-Application)  
+
+🐳 **Docker Image:** [someshdiwan/todo-list-app](https://hub.docker.com/r/someshdiwan/todo-list-app)  
+
+🌐 **Live Demo:** [todo-list-app-49q5.onrender.com](https://todo-list-app-49q5.onrender.com/)
+
+---
+
+```
+🏁 License
+This project is released under the MIT License.
+```
