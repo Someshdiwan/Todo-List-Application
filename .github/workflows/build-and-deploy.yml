@@ -32,13 +32,15 @@ jobs:
 
       - name: Find Java source files (handles spaces) and list them
         run: |
+          # find .java files and write NUL-delimited list for safe handling of spaces
           find . -name "*.java" -print0 > /tmp/sources0.txt
           if [ ! -s /tmp/sources0.txt ]; then
-            echo "No .java files found. Exiting."
+            echo "No .java files found. Exiting with error."
             exit 1
           fi
           echo "Java sources found:"
           tr '\0' '\n' < /tmp/sources0.txt | sed -n '1,200p'
+          # create newline-separated file for javac @sources.txt usage
           tr '\0' '\n' < /tmp/sources0.txt > sources.txt
 
       - name: Auto-detect Main class (package + class that contains main)
@@ -58,7 +60,7 @@ jobs:
           fi
 
           echo "Main file detected: $main_file"
-          pkg=$(sed -n '1,60p' "$main_file" | awk '/^\s*package/ {gsub(/;$/,"",$2); print $2; exit}')
+          pkg=$(sed -n '1,80p' "$main_file" | awk '/^\s*package/ {gsub(/;$/,"",$2); print $2; exit}')
           classname=$(basename "$main_file" .java)
 
           if [ -n "$pkg" ]; then
@@ -69,12 +71,14 @@ jobs:
 
           echo "Detected package: '${pkg:-<none>}'"
           echo "Detected classname: $classname"
-          echo "::set-output name=fq::$fq"
-          echo "::set-output name=mainfile::$main_file"
+          # set outputs via GITHUB_OUTPUT (modern way)
+          echo "fq=$fq" >> "$GITHUB_OUTPUT"
+          echo "mainfile=$main_file" >> "$GITHUB_OUTPUT"
 
       - name: Compile Java sources
         run: |
           mkdir -p out
+          # compile using javac with sources.txt (handles paths with spaces)
           javac -d out @sources.txt
           echo "Compilation done. Showing out/ listing (first 200 files):"
           find out -maxdepth 5 -type f | sed -n '1,200p'
@@ -102,22 +106,20 @@ jobs:
           else
             echo "No index.html found; creating a minimal page"
             cat > pages/index.html <<'HTML'
-  <!doctype html>
-  <html>
-  <head><meta charset="utf-8"><title>Todo App - Download</title></head>
-  <body>
-  <h1>Todo List App</h1>
-  <p><a href="app.jar" download>Download runnable JAR</a></p>
-  <pre>java -jar app.jar</pre>
-  </body>
-  </html>
-  HTML
-  fi
-  echo "Pages directory contents:"
-  ls -la pages
-
-- name: Deploy to GitHub Pages (gh-pages)
-  uses: peaceiris/actions-gh-pages@v4
+          <html>
+          <head><meta charset="utf-8"><title>Todo App - Download</title></head>
+          <body>
+          <h1>Todo List App</h1>
+          <p><a href="app.jar" download>Download runnable JAR</a></p>
+          <pre>java -jar app.jar</pre>
+          </body>
+          </html>
+          HTML
+          fi
+          echo "Pages directory contents:" 
+          ls -la pages
+      - name: Deploy to GitHub Pages (gh-pages)
+    uses: peaceiris/actions-gh-pages@v4
   with:
     github_token: ${{ secrets.GITHUB_TOKEN }}
     publish_dir: ./pages
