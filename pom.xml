@@ -1,0 +1,63 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<modelVersion>4.0.0</modelVersion>
+
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.1.6</version>
+    <relativePath/>
+</parent>
+
+<groupId>io.yourname</groupId>
+<artifactId>todo-list-app</artifactId>
+<version>1.0.0</version>
+<packaging>jar</packaging>
+
+<properties>
+    <java.version>17</java.version>
+    <maven.compiler.release>17</maven.compiler.release>
+</properties>
+
+<dependencies>
+    <!-- Spring Web -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- Validation for @Valid and constraints -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+</dependencies>
+
+<build>
+    <plugins>
+        <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <release>${maven.compiler.release}</release>
+            </configuration>
+        </plugin>
+
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <mainClass>io.yourname.todo.WebApplication</mainClass>
+            </configuration>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>repackage</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+</project>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Todo List — Live Java Demo</title>
+    <style>
+        :root{--bg:#07101a;--panel:#02060a;--muted:#9fb8d6;--accent:#2563eb;--text:#d6e7ff}
+        body{margin:0;height:100vh;display:flex;align-items:center;justify-content:center;background:#061016;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial}
+        .card{width:980px;max-width:96%;background:linear-gradient(180deg,#071a24 0%, #04121a 100%);padding:18px;border-radius:10px;box-shadow:0 12px 40px rgba(2,6,23,0.6)}
+        .title{color:var(--text);font-weight:600;margin:0 0 6px 0}
+        .sub{color:var(--muted);font-size:13px;margin:0 0 12px 0}
+        .term{background:var(--panel);border-radius:8px;padding:12px;min-height:380px;max-height:60vh;overflow:auto;color:var(--text);font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;font-size:13px}
+        .controls{display:flex;gap:8px;margin-top:12px}
+        .cmdInput{flex:1;padding:10px;border-radius:8px;border:1px solid #12313f;background:#071a22;color:var(--text);outline:none}
+        .btn{padding:10px 14px;border-radius:8px;border:none;background:var(--accent);color:#fff;cursor:pointer}
+        .small{color:var(--muted);font-size:12px;margin-top:8px}
+        .line{white-space:pre-wrap;margin-bottom:8px}
+        .ok{color:#9fe3a8}
+        .err{color:#ff9b9b}
+        .meta{color:#8fb0d6;font-size:12px;margin-bottom:8px}
+    </style>
+</head>
+<body>
+<div class="card" role="main" aria-label="Todo terminal">
+    <h2 class="title">Todo List — Live Java Demo</h2>
+    <div class="sub">Type console commands (same as local terminal). Commands: <strong>add / delete / edit / toggle / list / sort / help</strong></div>
+
+    <div id="term" class="term" aria-live="polite"></div>
+
+    <div class="controls" role="region" aria-label="Controls">
+        <input id="cmd" class="cmdInput" placeholder="Type a command (help for usage)" aria-label="Command input" />
+        <button id="run" class="btn">Run</button>
+    </div>
+
+    <div class="small">Tip: use <kbd>↑</kbd>/<kbd>↓</kbd> to navigate local history. Deadline format: <code>DD-MM-YYYY</code>.</div>
+</div>
+
+<script>
+    const term = document.getElementById('term');
+    const cmd = document.getElementById('cmd');
+    const run = document.getElementById('run');
+
+    const history = [];
+    let historyIdx = -1;
+
+    function putLine(text, cls){
+        const d = document.createElement('div');
+        d.className = 'line ' + (cls||'');
+        d.textContent = text;
+        term.appendChild(d);
+        term.scrollTop = term.scrollHeight;
+    }
+
+    function doFetch(command){
+        // POST raw text to /api/console
+        return fetch('/api/console', {
+            method: 'POST',
+            headers: {'Content-Type': 'text/plain'},
+            body: command
+        }).then(async r=>{
+            const txt = await r.text();
+            if(!r.ok){ throw new Error(txt || r.statusText); }
+            return txt;
+        });
+    }
+
+    function validateAddArgs(map){
+        if(!map.name) return "add needs name";
+        if(!map.deadline) return "add needs deadline";
+        const re = /^\d{2}-\d{2}-\d{4}$/;
+        if(!re.test(map.deadline)) return "deadline must be DD-MM-YYYY";
+        return null;
+    }
+
+    function parseArgs(parts){
+        const args = {};
+        for(let i=1;i<parts.length;i++){
+            const raw = parts[i];
+            const eq = raw.indexOf('=');
+            if(eq !== -1){
+                const k = raw.substring(0,eq).trim().toLowerCase();
+                const v = raw.substring(eq+1).trim();
+                args[k] = v;
+            }
+        }
+        return args;
+    }
+
+    async function runCommandLine(raw){
+        const line = raw.trim();
+        if(!line) return;
+        putLine('> ' + line, 'meta');
+        history.unshift(line);
+        historyIdx = -1;
+
+        const parts = line.split('|').map(p=>p.trim());
+        const cmdName = parts[0].toLowerCase();
+        const args = parseArgs(parts);
+
+        try {
+            // small client-side pre-validation for add/edit
+            if(cmdName === 'add'){
+                const err = validateAddArgs(args);
+                if(err){ putLine('Usage: add|name=<task name>|deadline=<DD-MM-YYYY>', 'err'); return; }
+            }
+            if(cmdName === 'edit' && !args.id){ putLine('edit needs id. Example: edit|id=1|name=New|deadline=20-10-2025', 'err'); return; }
+
+            // For flexibility, call console endpoint always (single API).
+            const res = await doFetch(line);
+            // server returns plain text
+            putLine(res, 'ok');
+
+            // auto-list after change-ish commands
+            if(['add','delete','edit','toggle','sort'].includes(cmdName)){
+                const listing = await fetch('/api/todos').then(r=>r.json());
+                if(listing.length === 0){ putLine('No tasks available.', 'meta'); }
+                else {
+                    putLine('Your Tasks:', 'meta');
+                    listing.forEach(t => putLine(`${t.id}. [${t.completed ? 'x' : ' '}] ${t.name} (Deadline: ${t.deadline})`));
+                }
+            }
+        } catch (err) {
+            putLine('Error: ' + (err.message || err), 'err');
+        }
+    }
+
+    run.addEventListener('click', ()=>{ runCommandLine(cmd.value); cmd.value=''; cmd.focus(); });
+    cmd.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter'){ runCommandLine(cmd.value); cmd.value=''; e.preventDefault(); }
+        else if(e.key === 'ArrowUp'){ // history
+            if(history.length === 0) return;
+            historyIdx = Math.min(history.length-1, historyIdx+1);
+            cmd.value = history[historyIdx] || '';
+            e.preventDefault();
+        } else if(e.key === 'ArrowDown'){
+            if(history.length === 0) return;
+            historyIdx = Math.max(-1, historyIdx-1);
+            cmd.value = historyIdx === -1 ? '' : history[historyIdx];
+            e.preventDefault();
+        }
+    });
+
+    // welcome + initial list
+    putLine('Welcome to Todo List Application (web). Type help for commands.', 'meta');
+    fetch('/api/todos').then(r=>r.json()).then(listing=>{
+        if(listing.length===0){ putLine('No tasks available.', 'meta'); return; }
+        putLine('Your Tasks:', 'meta');
+        listing.forEach(t=> putLine(`${t.id}. [${t.completed ? 'x' : ' '}] ${t.name} (Deadline: ${t.deadline})`));
+    }).catch(()=>{ /* ignore */ });
+</script>
+</body>
+</html>
