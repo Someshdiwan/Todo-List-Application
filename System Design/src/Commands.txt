@@ -1,0 +1,2 @@
+docker build -t todo-list-app:latest .
+docker run -p 8080:8080 todo-list-app:latest
