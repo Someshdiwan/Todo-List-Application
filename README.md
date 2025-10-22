@@ -77,12 +77,9 @@ https://todo-list-app-49q5.onrender.com/
 ```
 Todo-List-Application/
 │
-├── .github/                      # GitHub workflows (CI/CD, optional)
 ├── Dockerfile                    # Docker multi-stage build configuration
 ├── pom.xml                       # Maven build & dependency configuration
-├── LICENSE                       # Open-source license
 ├── README.md                     # Project documentation
-├── .gitignore                    # Ignored build & IDE files
 │
 ├── src/
 │   └── main/
@@ -102,20 +99,15 @@ Todo-List-Application/
 │           └── static/
 │               └── index.html                           # Browser-based terminal UI
 │
-├── System Design/                 # Design documents & architecture artifacts
+├── System Design/                                       # Design documents & architecture artifacts
 │   ├── src/
-│   │   ├── Commands.txt           # Example commands for testing UI
-│   │   ├── LLD.jpeg               # Low-Level Design diagram
-│   │   ├── Low Level Design For ToDo List.jpeg  # Extended LLD reference
-│   │   └── TodoListApplication    # Design project file (optional)
-│   └── System Design.iml          # IntelliJ design project metadata
-│
-└── out/                           # Build output (excluded from Git)
-
+│   │   ├── Commands.txt                                 # Example commands for testing UI
+│   │   ├── LLD.jpeg                                     # Low-Level Design diagram
+│   │   ├── Low Level Design For ToDo List.jpeg          # Extended LLD reference
+│   │   └── TodoListApplication                          # Design project file (optional)
 ```
 
 ---
-
 ## 🐳 Run with Docker
 
 ```bash
@@ -151,8 +143,7 @@ This project was created for hands-on exploration of:
 
 💻 **GitHub Repo:** [SomeshDiwan/Todo-List-Application](https://github.com/Someshdiwan/Todo-List-Application)  
 
-🐳 **Docker Image:** [someshdiwan/todo-list-app](https://hub.docker.com/r/someshdiwan/todo-list-app)  
-
+🐳 **Docker Image:** [someshdiwan/todo-list-app](https://hub.docker.com/r/someshdiwan/todo-list-app)
 ---
 
 ```
