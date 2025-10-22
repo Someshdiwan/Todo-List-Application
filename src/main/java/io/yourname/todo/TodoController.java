@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -28,8 +27,7 @@ public class TodoController {
         this.service = service;
     }
 
-    // ---------- Structured REST API ----------
-
+    // Structured REST API
     @GetMapping("/todos")
     public List<TodoItem> list() {
         return service.list();
@@ -74,7 +72,7 @@ public class TodoController {
         return ResponseEntity.ok().build();
     }
 
-    // ---------- Console-style command endpoint (single-line commands) ----------
+    // Console-style command endpoint
     @PostMapping(value = "/console", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> execPlain(@RequestBody String body) {
         return exec(body);
@@ -169,7 +167,7 @@ public class TodoController {
         }
     }
 
-    // simple parser (keeps file self-contained)
+    // simple parser
     private static Command parseCommand(String line) {
         if (line == null) return new Command("", Collections.emptyMap());
         // inside parseCommand(String line)
@@ -212,7 +210,7 @@ public class TodoController {
         }
     }
 
-    // ---------- response helpers ----------
+    // response helpers
     private ResponseEntity<String> ok(String s) {
         return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(s);
     }

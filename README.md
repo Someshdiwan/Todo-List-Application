@@ -8,7 +8,24 @@ Built with **Java 17**, **Maven**, and **Docker**, it provides a command-based w
 ---
 
 ```
-### 🌐 Live Demo
+🌐 Live Demo Video
+```
+
+<!-- Compact left-aligned YouTube preview -->
+<div align="left">
+  <a href="https://youtu.be/6RHvsfSEc4c?si=zwZNaTyDDakT1pTt" target="_blank">
+    <img src="https://img.youtube.com/vi/6RHvsfSEc4c/hqdefault.jpg" 
+         alt="🎥 Watch the Todo List App Demo on YouTube" 
+         width="360" style="border-radius:6px;">
+  </a>
+  <br>
+  <a href="https://youtu.be/6RHvsfSEc4c?si=zwZNaTyDDakT1pTt" target="_blank">
+    <img src="https://img.shields.io/badge/YouTube-Watch%20Demo-red?logo=youtube&logoColor=white" 
+         alt="Watch on YouTube">
+  </a>
+</div>
+
+---
 
 ```bash
 🚀 Access the live app here (Render Free Tier):
